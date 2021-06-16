@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import IBPCollectionViewCompositionalLayout
 
 class MapKitSampleCollectionViewController: UIViewController {
     enum Section {
@@ -41,6 +42,7 @@ class MapKitSampleCollectionViewController: UIViewController {
     }
     
     private func configureDataSource() {
+        /*
         let cellRegistration = UICollectionView.CellRegistration<MapKitSampleCollectionViewCell, MapItem>.init(handler: {(cell, indexPath, identifier) in
             cell.update(item: identifier)
         })
@@ -59,6 +61,7 @@ class MapKitSampleCollectionViewController: UIViewController {
         ]
         snapshot.appendItems(mapItems)
         dataSource.apply(snapshot, animatingDifferences: false)
+         */
     }
 }
 

@@ -1,4 +1,5 @@
 import UIKit
+import IBPCollectionViewCompositionalLayout
 
 class NestedGroupCollectionViewController: UIViewController {
     enum Section: Int, CaseIterable {
@@ -17,7 +18,7 @@ class NestedGroupCollectionViewController: UIViewController {
     func configureHierarchy() {
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createLayout())
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        collectionView.backgroundColor = .systemBackground
+        // collectionView.backgroundColor = .systemBackground
         collectionView.register(cellType: NestedGroupCollectionViewCell.self)
         view.addSubview(collectionView)
         collectionView.delegate = self

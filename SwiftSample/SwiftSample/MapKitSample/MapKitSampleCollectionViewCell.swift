@@ -29,7 +29,7 @@ class MapKitSampleCollectionViewCell: UICollectionViewCell {
         contentView.addSubview(mapImageView)
         mapImageView.clipsToBounds = true
         mapImageView.layer.cornerRadius = 10.0
-        mapImageView.backgroundColor = UIColor.systemGroupedBackground
+        // mapImageView.backgroundColor = UIColor.systemGroupedBackground
         mapImageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             mapImageView.topAnchor.constraint(equalTo: placeNameLabel.bottomAnchor, constant: 10),
