@@ -26,86 +26,74 @@ class NestedGroupCollectionViewController: UIViewController {
     }
     
     func createLayout() -> UICollectionViewLayout {
-        let sideInset: CGFloat = 18
-        let insideInset: CGFloat = 8
-        let topInset: CGFloat = 8
+        let itemSpacing: CGFloat = 1
         let viewWidth: CGFloat = view.bounds.width
-        let smallSquareWidth: CGFloat = (viewWidth - (sideInset * 2 + insideInset * 2)) / 3
-        let mediumSquareWidth: CGFloat = smallSquareWidth * 2 + insideInset
-        let nestedGroupHeight: CGFloat = mediumSquareWidth + topInset
-        let smallSquareGroupHeight: CGFloat = smallSquareWidth + topInset
+        let smallSquareWidth: CGFloat = (viewWidth - itemSpacing * 2) / 3
+        let mediumSquareWidth: CGFloat = smallSquareWidth * 2 + itemSpacing
         
         
         let layout = UICollectionViewCompositionalLayout {
             (sectionIndex: Int, layoutEnvironment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? in
+            
+            let smallSquareItem = NSCollectionLayoutItem(
+                layoutSize: NSCollectionLayoutSize(widthDimension: .absolute(smallSquareWidth),
+                                                   heightDimension: .absolute(smallSquareWidth)))
+            let smallSquareGroup = NSCollectionLayoutGroup.vertical(
+                layoutSize: NSCollectionLayoutSize(widthDimension: .absolute(smallSquareWidth),
+                                                   heightDimension: .fractionalHeight(1.0)),
+                subitem: smallSquareItem, count: 2)
+            smallSquareGroup.interItemSpacing = .fixed(1)
 
             let nestedGroupTypeA: NSCollectionLayoutGroup = {
-                let smallSquareItem = NSCollectionLayoutItem(
-                    layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                      heightDimension: .absolute(smallSquareWidth + insideInset)))
-                smallSquareItem.contentInsets = NSDirectionalEdgeInsets(top: topInset, leading: 0, bottom: 0, trailing: insideInset)
-                let smallSquareGroup = NSCollectionLayoutGroup.vertical(
-                    layoutSize: NSCollectionLayoutSize(widthDimension: .absolute(smallSquareWidth + insideInset),
-                                                      heightDimension: .fractionalHeight(1.0)),
-                    subitem: smallSquareItem, count: 2)
-
                 let mediumSquareItem = NSCollectionLayoutItem(
-                    layoutSize: NSCollectionLayoutSize(widthDimension: .absolute(mediumSquareWidth),
-                                                      heightDimension: .fractionalHeight(1.0)))
-                mediumSquareItem.contentInsets = NSDirectionalEdgeInsets(top: topInset, leading: 0, bottom: 0, trailing: 0)
+                    layoutSize: NSCollectionLayoutSize(widthDimension: .absolute(smallSquareWidth),
+                                                      heightDimension: .absolute(mediumSquareWidth)))
 
                 let nestedGroup = NSCollectionLayoutGroup.horizontal(
                     layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                      heightDimension: .absolute(nestedGroupHeight)),
-                    subitems: [smallSquareGroup, mediumSquareItem])
+                                                       heightDimension: .absolute(mediumSquareWidth)),
+                    subitems: [smallSquareGroup, smallSquareGroup, mediumSquareItem])
+                nestedGroup.interItemSpacing = .fixed(1)
+
                 return nestedGroup
             }()
             
             let nestedGroupTypeB: NSCollectionLayoutGroup = {
                 let mediumSquareItem = NSCollectionLayoutItem(
-                    layoutSize: NSCollectionLayoutSize(widthDimension: .absolute(mediumSquareWidth + insideInset),
-                                                      heightDimension: .fractionalHeight(1.0)))
-                mediumSquareItem.contentInsets = NSDirectionalEdgeInsets(top: topInset, leading: 0, bottom: 0, trailing: insideInset)
-
-                let smallSquareItem = NSCollectionLayoutItem(
-                    layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                      heightDimension: .absolute(smallSquareWidth + insideInset)))
-                smallSquareItem.contentInsets = NSDirectionalEdgeInsets(top: topInset, leading: 0, bottom: 0, trailing: 0)
-                let smallSquareGroup = NSCollectionLayoutGroup.vertical(
-                    layoutSize: NSCollectionLayoutSize(widthDimension: .absolute(smallSquareWidth),
-                                                      heightDimension: .fractionalHeight(1.0)),
-                    subitem: smallSquareItem, count: 2)
+                    layoutSize: NSCollectionLayoutSize(widthDimension: .absolute(mediumSquareWidth),
+                                                      heightDimension: .absolute(mediumSquareWidth)))
 
                 let nestedGroup = NSCollectionLayoutGroup.horizontal(
                     layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                      heightDimension: .absolute(nestedGroupHeight)),
+                                                       heightDimension: .absolute(mediumSquareWidth)),
                     subitems: [mediumSquareItem, smallSquareGroup])
+                nestedGroup.interItemSpacing = .fixed(1)
+
                 return nestedGroup
             }()
             
             let nestedGroupTypeC: NSCollectionLayoutGroup = {
                 let smallSquareItem = NSCollectionLayoutItem(
                     layoutSize: NSCollectionLayoutSize(widthDimension: .absolute(smallSquareWidth),
-                                                      heightDimension: .fractionalHeight(1.0)))
+                                                      heightDimension: .absolute(smallSquareWidth)))
 
                 let smallSquareGroup = NSCollectionLayoutGroup.horizontal(
                     layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                      heightDimension: .absolute(smallSquareGroupHeight)),
+                                                       heightDimension: .absolute(smallSquareWidth)),
                     subitem: smallSquareItem,
                     count: 3)
-                smallSquareGroup.interItemSpacing = .fixed(insideInset)
-                smallSquareGroup.contentInsets = NSDirectionalEdgeInsets(top: topInset, leading: 0, bottom: 0, trailing: 0)
+                smallSquareGroup.interItemSpacing = .fixed(1)
                 
                 return smallSquareGroup
             }()
             
             let group = NSCollectionLayoutGroup.vertical(
-            layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                               heightDimension: .absolute(nestedGroupHeight * 2 + smallSquareGroupHeight * 2)),
-            subitems: [nestedGroupTypeA, nestedGroupTypeC, nestedGroupTypeB, nestedGroupTypeC])
-            
+                layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                               heightDimension: .fractionalHeight(mediumSquareWidth * 2 + smallSquareWidth * 4 + itemSpacing * 5)),
+                subitems: [nestedGroupTypeA, nestedGroupTypeC, nestedGroupTypeC, nestedGroupTypeB, nestedGroupTypeC, nestedGroupTypeC])
+            group.interItemSpacing = .fixed(1)
             let section = NSCollectionLayoutSection(group: group)
-            section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: sideInset, bottom: 0, trailing: sideInset)
+            section.interGroupSpacing = 1
             return section
 
         }
