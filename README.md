@@ -17,7 +17,9 @@ https://muchan611.hatenablog.com/
 - CompositionalLayoutを使って複雑なレイアウトのCollectionViewを実装する
 - https://muchan611.hatenablog.com/entry/2019/11/03/181644
 
-<img src="https://gyazo.com/ecbb99e1bc9d5084e55e06c281a9c141.png" width=200>
+- Instagram のレイアウトに寄せてみる
+
+<img src="https://github.com/ykws/swift-sample/blob/feature/ios12+ibp_collection_view_compositional_Layout/Simulator%20Screen%20Recording%20-%20iPod%20touch%20(7th%20generation)%20-%202021-06-25%20at%2003.59.21.mp4?raw=true" width=200>
 
 
 ## TabContainerView
