@@ -26,18 +26,22 @@ class NestedGroupCollectionViewController: UIViewController {
     }
     
     func createLayout() -> UICollectionViewLayout {
+        // 画像の比率を可変に対応
+        let squareRaito: CGFloat = 1 / 1
         let itemSpacing: CGFloat = 1
         let viewWidth: CGFloat = view.bounds.width
         let smallSquareWidth: CGFloat = (viewWidth - itemSpacing * 2) / 3
+        let smallSquareHeight: CGFloat = smallSquareWidth * squareRaito
         let mediumSquareWidth: CGFloat = smallSquareWidth * 2 + itemSpacing
-        
+        let mediumSquareHeight: CGFloat = smallSquareHeight * 2 + itemSpacing
+
         
         let layout = UICollectionViewCompositionalLayout {
             (sectionIndex: Int, layoutEnvironment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? in
             
             let smallSquareItem = NSCollectionLayoutItem(
                 layoutSize: NSCollectionLayoutSize(widthDimension: .absolute(smallSquareWidth),
-                                                   heightDimension: .absolute(smallSquareWidth)))
+                                                   heightDimension: .fractionalHeight(0.5)))
             let smallSquareGroup = NSCollectionLayoutGroup.vertical(
                 layoutSize: NSCollectionLayoutSize(widthDimension: .absolute(smallSquareWidth),
                                                    heightDimension: .fractionalHeight(1.0)),
@@ -47,11 +51,11 @@ class NestedGroupCollectionViewController: UIViewController {
             let nestedGroupTypeA: NSCollectionLayoutGroup = {
                 let mediumSquareItem = NSCollectionLayoutItem(
                     layoutSize: NSCollectionLayoutSize(widthDimension: .absolute(smallSquareWidth),
-                                                      heightDimension: .absolute(mediumSquareWidth)))
+                                                       heightDimension: .fractionalHeight(1.0)))
 
                 let nestedGroup = NSCollectionLayoutGroup.horizontal(
                     layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                       heightDimension: .absolute(mediumSquareWidth)),
+                                                       heightDimension: .absolute(mediumSquareHeight)),
                     subitems: [smallSquareGroup, smallSquareGroup, mediumSquareItem])
                 nestedGroup.interItemSpacing = .fixed(1)
 
@@ -61,11 +65,11 @@ class NestedGroupCollectionViewController: UIViewController {
             let nestedGroupTypeB: NSCollectionLayoutGroup = {
                 let mediumSquareItem = NSCollectionLayoutItem(
                     layoutSize: NSCollectionLayoutSize(widthDimension: .absolute(mediumSquareWidth),
-                                                      heightDimension: .absolute(mediumSquareWidth)))
+                                                       heightDimension: .fractionalHeight(1.0)))
 
                 let nestedGroup = NSCollectionLayoutGroup.horizontal(
                     layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                       heightDimension: .absolute(mediumSquareWidth)),
+                                                       heightDimension: .absolute(mediumSquareHeight)),
                     subitems: [mediumSquareItem, smallSquareGroup])
                 nestedGroup.interItemSpacing = .fixed(1)
 
@@ -75,11 +79,11 @@ class NestedGroupCollectionViewController: UIViewController {
             let nestedGroupTypeC: NSCollectionLayoutGroup = {
                 let smallSquareItem = NSCollectionLayoutItem(
                     layoutSize: NSCollectionLayoutSize(widthDimension: .absolute(smallSquareWidth),
-                                                      heightDimension: .absolute(smallSquareWidth)))
+                                                       heightDimension: .fractionalHeight(1.0)))
 
                 let smallSquareGroup = NSCollectionLayoutGroup.horizontal(
                     layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                       heightDimension: .absolute(smallSquareWidth)),
+                                                       heightDimension: .absolute(smallSquareHeight)),
                     subitem: smallSquareItem,
                     count: 3)
                 smallSquareGroup.interItemSpacing = .fixed(1)
@@ -89,7 +93,7 @@ class NestedGroupCollectionViewController: UIViewController {
             
             let group = NSCollectionLayoutGroup.vertical(
                 layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                               heightDimension: .fractionalHeight(mediumSquareWidth * 2 + smallSquareWidth * 4 + itemSpacing * 5)),
+                                               heightDimension: .fractionalHeight(mediumSquareHeight * 2 + smallSquareHeight * 4 + itemSpacing * 5)),
                 subitems: [nestedGroupTypeA, nestedGroupTypeC, nestedGroupTypeC, nestedGroupTypeB, nestedGroupTypeC, nestedGroupTypeC])
             group.interItemSpacing = .fixed(1)
             let section = NSCollectionLayoutSection(group: group)
