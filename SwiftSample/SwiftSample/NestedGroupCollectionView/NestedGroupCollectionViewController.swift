@@ -32,7 +32,7 @@ class NestedGroupCollectionViewController: UIViewController {
         let viewWidth: CGFloat = view.bounds.width
         // 小数の演算だとレイアウトが崩れるので小数点以下を切り上げて整数を扱う
         let smallSquareWidth: CGFloat = ceil((viewWidth - itemSpacing * 2) / 3)
-        let smallSquareHeight: CGFloat = smallSquareWidth * squareRaito
+        let smallSquareHeight: CGFloat = ceil(smallSquareWidth * squareRaito)
         // 一番右端は少し小さめにする
         let moreSmallSquareWidth: CGFloat = viewWidth - (smallSquareWidth * 2 + itemSpacing * 2)
         let mediumSquareWidth: CGFloat = viewWidth - (moreSmallSquareWidth + itemSpacing)
