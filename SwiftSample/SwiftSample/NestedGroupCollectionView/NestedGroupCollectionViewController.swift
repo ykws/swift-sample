@@ -30,9 +30,12 @@ class NestedGroupCollectionViewController: UIViewController {
         let squareRaito: CGFloat = 1 / 1
         let itemSpacing: CGFloat = 1
         let viewWidth: CGFloat = view.bounds.width
-        let smallSquareWidth: CGFloat = (viewWidth - itemSpacing * 2) / 3
+        // 小数の演算だとレイアウトが崩れるので小数点以下を切り上げて整数を扱う
+        let smallSquareWidth: CGFloat = ceil((viewWidth - itemSpacing * 2) / 3)
         let smallSquareHeight: CGFloat = smallSquareWidth * squareRaito
-        let mediumSquareWidth: CGFloat = smallSquareWidth * 2 + itemSpacing
+        // 一番右端は少し小さめにする
+        let moreSmallSquareWidth: CGFloat = viewWidth - (smallSquareWidth * 2 + itemSpacing * 2)
+        let mediumSquareWidth: CGFloat = viewWidth - (moreSmallSquareWidth + itemSpacing)
         let mediumSquareHeight: CGFloat = smallSquareHeight * 2 + itemSpacing
 
         
@@ -46,18 +49,27 @@ class NestedGroupCollectionViewController: UIViewController {
                 layoutSize: NSCollectionLayoutSize(widthDimension: .absolute(smallSquareWidth),
                                                    heightDimension: .fractionalHeight(1.0)),
                 subitem: smallSquareItem, count: 2)
-            smallSquareGroup.interItemSpacing = .fixed(1)
+            smallSquareGroup.interItemSpacing = .fixed(itemSpacing)
+            
+            let moreSmallSquareItem = NSCollectionLayoutItem(
+                layoutSize: NSCollectionLayoutSize(widthDimension: .absolute(moreSmallSquareWidth),
+                                                   heightDimension: .fractionalHeight(0.5)))
+            let moreSmallSquareGroup = NSCollectionLayoutGroup.vertical(
+                layoutSize: NSCollectionLayoutSize(widthDimension: .absolute(moreSmallSquareWidth),
+                                                   heightDimension: .fractionalHeight(1.0)),
+                subitem: moreSmallSquareItem, count: 2)
+            moreSmallSquareGroup.interItemSpacing = .fixed(itemSpacing)
 
             let nestedGroupTypeA: NSCollectionLayoutGroup = {
                 let mediumSquareItem = NSCollectionLayoutItem(
-                    layoutSize: NSCollectionLayoutSize(widthDimension: .absolute(smallSquareWidth),
+                    layoutSize: NSCollectionLayoutSize(widthDimension: .absolute(moreSmallSquareWidth),
                                                        heightDimension: .fractionalHeight(1.0)))
 
                 let nestedGroup = NSCollectionLayoutGroup.horizontal(
                     layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                                        heightDimension: .absolute(mediumSquareHeight)),
                     subitems: [smallSquareGroup, smallSquareGroup, mediumSquareItem])
-                nestedGroup.interItemSpacing = .fixed(1)
+                nestedGroup.interItemSpacing = .fixed(itemSpacing)
 
                 return nestedGroup
             }()
@@ -70,34 +82,29 @@ class NestedGroupCollectionViewController: UIViewController {
                 let nestedGroup = NSCollectionLayoutGroup.horizontal(
                     layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                                        heightDimension: .absolute(mediumSquareHeight)),
-                    subitems: [mediumSquareItem, smallSquareGroup])
-                nestedGroup.interItemSpacing = .fixed(1)
+                    subitems: [mediumSquareItem, moreSmallSquareGroup])
+                nestedGroup.interItemSpacing = .fixed(itemSpacing)
 
                 return nestedGroup
             }()
             
             let nestedGroupTypeC: NSCollectionLayoutGroup = {
-                let smallSquareItem = NSCollectionLayoutItem(
-                    layoutSize: NSCollectionLayoutSize(widthDimension: .absolute(smallSquareWidth),
-                                                       heightDimension: .fractionalHeight(1.0)))
-
                 let smallSquareGroup = NSCollectionLayoutGroup.horizontal(
                     layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                       heightDimension: .absolute(smallSquareHeight)),
-                    subitem: smallSquareItem,
-                    count: 3)
-                smallSquareGroup.interItemSpacing = .fixed(1)
+                                                       heightDimension: .absolute(mediumSquareHeight)),
+                    subitems: [smallSquareGroup, smallSquareGroup, moreSmallSquareGroup])
+                smallSquareGroup.interItemSpacing = .fixed(itemSpacing)
                 
                 return smallSquareGroup
             }()
             
             let group = NSCollectionLayoutGroup.vertical(
                 layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                               heightDimension: .fractionalHeight(mediumSquareHeight * 2 + smallSquareHeight * 4 + itemSpacing * 5)),
-                subitems: [nestedGroupTypeA, nestedGroupTypeC, nestedGroupTypeC, nestedGroupTypeB, nestedGroupTypeC, nestedGroupTypeC])
-            group.interItemSpacing = .fixed(1)
+                                               heightDimension: .absolute(mediumSquareHeight * 4 + itemSpacing * 3)),
+                subitems: [nestedGroupTypeA, nestedGroupTypeC, nestedGroupTypeB, nestedGroupTypeC])
+            group.interItemSpacing = .fixed(itemSpacing)
             let section = NSCollectionLayoutSection(group: group)
-            section.interGroupSpacing = 1
+            section.interGroupSpacing = itemSpacing
             return section
 
         }
